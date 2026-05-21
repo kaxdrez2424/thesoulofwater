@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Vé - The Soul of Water</title>
+    <style>
+        :root {
+            --vip-color: #f39c12;
+            --lienhoa-color: #3498db;
+            --thuyanh-color: #f1c40f;
+            --luuthuy-color: #2ecc71;
+            --vanba-color: #9b59b6;
+            --selected-color: #e74c3c;
+            --bg-color: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #0c3c60;
+        }
+
+        .sub-title {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .legend-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .stage {
+            width: 60%;
+            margin: 20px auto 40px auto;
+            background: #e0e0e0;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-bottom: 4px solid #0c3c60;
+            border-radius: 4px;
+        }
+
+        .theater-layout {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+            padding: 10px;
+        }
+
+        .block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .row-label {
+            width: 25px;
+            font-weight: bold;
+            text-align: center;
+            color: #555;
+        }
+
+        .seat {
+            width: 32px;
+            height: 32px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            background: #ddd;
+            color: #fff;
+        }
+
+        .seat:hover {
+            transform: scale(1.15);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .seat.haitrieu { background-color: var(--vip-color); }
+        .seat.lienhoa { background-color: var(--lienhoa-color); }
+        .seat.thuyanh { background-color: var(--thuyanh-color); color: #333; }
+        .seat.luuthuy { background-color: var(--luuthuy-color); }
+        .seat.vanba { background-color: var(--vanba-color); }
+        
+        .seat.selected {
+            background-color: var(--selected-color) !important;
+            color: white !important;
+        }
+
+        .seat.empty { visibility: hidden; }
+
+        .booking-form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            border-top: 2px dashed #ddd;
+            padding-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .booking-form-section { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .qr-section {
+            display: none;
+            text-align: center;
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #2ecc71;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .qr-section img {
+            max-width: 220px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .bank-info {
+            background: #f1f2f6;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .checkout-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .checkout-summary p {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .checkout-summary .total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d35400;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .btn-submit {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .btn-submit:hover { background-color: #219653; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>THE SOUL OF WATER</h1>
+    <div class="sub-title">LINH HỒN CỦA NƯỚC - SÂN KHẤU RẠP I (212 GHẾ)</div>
+
+    <div class="legend-container">
+        <div class="legend-item"><div class="color-box" style="background: var(--vip-color)"></div> HẢI TRIỀU (VIP - 500K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--lienhoa-color)"></div> LIÊN HOA (A-B - 400K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--thuyanh-color)"></div> THỦY ẢNH (C->F - 400K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--luuthuy-color)"></div> LƯU THỦY (H->L - 300K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--vanba-color)"></div> VÂN BA (M->P - 200K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--selected-color)"></div> ĐANG CHỌN</div>
+    </div>
+
+    <div class="stage">SÂN KHẤU / STAGE</div>
+
+    <div class="theater-layout">
+        <div class="block" id="left-block"></div>
+        <div class="block" id="right-block"></div>
+    </div>
+
+    <form id="bookingForm" action="https://formspree.io/f/YOUR_FORM_ID_HERE" method="POST" enctype="multipart/form-data">
+        <div class="booking-form-section">
+            
+            <div>
+                <h3>THÔNG TIN KHÁCH HÀNG</h3>
+                <div class="form-group">
+                    <label>Họ và Tên *</label>
+                    <input type="text" name="Họ tên" required placeholder="Nguyễn Văn A">
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại *</label>
+                    <input type="tel" name="Số điện thoại" required placeholder="0901234567">
+                </div>
+                <div class="form-group">
+                    <label>Email nhận vé *</label>
+                    <input type="email" name="Email" required placeholder="username@gmail.com">
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label style="color: #c0392b;">Tải ảnh chụp màn hình Chuyển Khoản *</label>
+                    <input type="file" name="Ảnh xác nhận CK" accept="image/*" required>
+                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Khách hàng quét mã QR bên phải để thanh toán, sau đó chụp màn hình bill thành công và tải lên tại đây.</small>
+                </div>
+            </div>
+
+            <div class="checkout-box">
+                <h3>THÔNG TIN THANH TOÁN</h3>
+                <div class="checkout-summary">
+                    <p><span>Ghế đã chọn:</span> <strong id="selected-seats-text">Chưa chọn ghế nào</strong></p>
+                    <p><span>Số lượng vé:</span> <strong id="ticket-count">0</strong></p>
+                    <p class="total"><span>Tổng tiền:</span> <span id="total-price">0 đ</span></p>
+                    
+                    <input type="hidden" name="Ghế chọn" id="hidden-seats">
+                    <input type="hidden" name="Tổng tiền" id="hidden-total">
+
+                    <div class="qr-section" id="qr-container">
+                        <h4 style="margin:0 0 10px 0; color:#27ae60;">QUÉT MÃ QR ĐỂ THANH TOÁN</h4>
+                        
+                        <div class="bank-info">
+                            <strong>Chủ tài khoản:</strong> LE MINH HUYEN<br>
+                            <strong>Số tài khoản:</strong> 5550 8102 005<br>
+                            <strong>Ngân hàng:</strong> TPBank (Ngân hàng Tiền Phong)
+                        </div>
+
+                        <img id="qr-image" src="https://img.vietqr.io/image/TPBank-55508102005-qr_only.png?accountName=LE%20MINH%20HUYEN" alt="Mã QR LE MINH HUYEN">
+                        
+                        <p style="font-size:13px; font-weight:bold; color:#2c3e50; margin:5px 0 0 0;">
+                            Nội dung CK: <span id="qr-content" style="color:#d35400;">SOULOFWATER</span>
+                        </p>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">GỬI XÁC NHẬN ĐẶT VÉ</button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    const rowConfig = {
+        'A': { type: 'lienhoa', price: 400000 }, 'B': { type: 'lienhoa', price: 400000 },
+        'C': { type: 'thuyanh', price: 400000 }, 'D': { type: 'thuyanh', price: 400000 },
+        'E': { type: 'thuyanh', price: 400000 }, 'F': { type: 'thuyanh', price: 400000 },
+        'H': { type: 'luuthuy', price: 300000 }, 'I': { type: 'luuthuy', price: 300000 },
+        'K': { type: 'luuthuy', price: 300000 }, 'L': { type: 'luuthuy', price: 300000 },
+        'M': { type: 'vanba', price: 200000 },  'N': { type: 'vanba', price: 200000 },  'P': { type: 'vanba', price: 200000 }
+    };
+
+    const layoutData = {
+        left: [
+            { row: 'Hải Triều', seats: [13, 12, 11, 10, 9, 8], isVipHeader: true },
+            { row: 'A', seats: [14, 13, 12, 11, 10, 9, 8] }, { row: 'B', seats: [null, 13, 12, 11, 10, 9, 8] },
+            { row: 'C', seats: [14, 13, 12, 11, 10, 9, 8] }, { row: 'D', seats: [null, 13, 12, 11, 10, 9, 8] },
+            { row: 'E', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'F', seats: [15, 14, 13, 12, 11, 10, 9] },
+            { row: 'H', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'I', seats: [null, 13, 12, 11, 10, 9, 8] },
+            { row: 'K', seats: [null, 13, 12, 11, 10, 9, 8] }, { row: 'L', seats: [14, 13, 12, 11, 10, 9, 8] },
+            { row: 'M', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'N', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'P', seats: [15, 14, 13, 12, 11, 10, 9] }
+        ],
+        right: [
+            { row: 'Hải Triều', seats: [7, 6, 5, 4, 3, 2], isVipHeader: true },
+            { row: 'A', seats: [7, 6, 5, 4, 3, 2, 1] }, { row: 'B', seats: [7, 6, 5, 4, 3, 2, 1] },
+            { row: 'C', seats: [7, 6, 5, 4, 3, 2, 1] }, { row: 'D', seats: [7, 6, 5, 4, 3, 2, 1] },
+            { row: 'E', seats: [8, 7, 6, 5, 4, 3, 2] }, { row: 'F', seats: [8, 7, 6, 5, 4, 2, 1] },
+            { row: 'H', seats: [8, 7, 6, 5, 4, 2, 1] }, { row: 'I', seats: [8, 7, 6, 5, 4, 3, 1] },
+            { row: 'K', seats: [8, 7, 6, 5, 4, 3, 1] }, { row: 'L', seats: [8, 7, 6, 5, 4, 3, 1] },
+            { row: 'M', seats: [8, 7, 6, 5, 4, 3, 1] }, { row: 'N', seats: [8, 7, 6, 5, 4, 3, 1] }, { row: 'P', seats: [8, 7, 6, 5, 4, 3, 1] }
+        ]
+    };
+
+    let selectedSeats = [];
+
+    function renderBlock(blockId, data) {
+        const blockContainer = document.getElementById(blockId);
+        data.forEach(rowData => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'row';
+            const label = document.createElement('div');
+            label.className = 'row-label';
+            label.innerText = rowData.isVipHeader ? '' : rowData.row;
+            rowDiv.appendChild(label);
+
+            rowData.seats.forEach(seatNum => {
+                const seatDiv = document.createElement('div');
+                if (seatNum === null) {
+                    seatDiv.className = 'seat empty';
+                } else {
+                    let seatType = 'haitrieu';
+                    let price = 500000;
+                    if (!rowData.isVipHeader) {
+                        seatType = rowConfig[rowData.row].type;
+                        price = rowConfig[rowData.row].price;
+                    }
+                    seatDiv.className = `seat ${seatType}`;
+                    seatDiv.innerText = seatNum;
+                    const seatId = rowData.isVipHeader ? `VIP-${seatNum}` : `${rowData.row}-${seatNum}`;
+                    seatDiv.dataset.id = seatId;
+                    seatDiv.dataset.price = price;
+                    seatDiv.addEventListener('click', () => toggleSeat(seatDiv, seatId, price));
+                }
+                rowDiv.appendChild(seatDiv);
+            });
+            blockContainer.appendChild(rowDiv);
+        });
+    }
+
+    function toggleSeat(seatElement, seatId, price) {
+        if (seatElement.classList.contains('selected')) {
+            seatElement.classList.remove('selected');
+            selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+        } else {
+            seatElement.classList.add('selected');
+            selectedSeats.push({ id: seatId, price: price });
+        }
+        updateCheckoutSummary();
+    }
+
+    function updateCheckoutSummary() {
+        const count = selectedSeats.length;
+        const total = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+        const seatNames = selectedSeats.map(s => s.id).join(', ');
+
+        document.getElementById('ticket-count').innerText = count;
+        document.getElementById('selected-seats-text').innerText = count > 0 ? seatNames : 'Chưa chọn ghế nào';
+        document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + ' đ';
+
+        document.getElementById('hidden-seats').value = seatNames;
+        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN') + ' đ';
+
+        const qrContainer = document.getElementById('qr-container');
+        if (count > 0) {
+            const formatSeats = seatNames.replace(/,/g, '');
+            document.getElementById('qr-content').innerText = `SOULOFWATER ${formatSeats}`;
+            
+            const dynamicQr = `https://img.vietqr.io/image/TPBank-55508102005-qr_only.png?amount=${total}&addInfo=SOULOFWATER%20${encodeURIComponent(formatSeats)}&accountName=LE%20MINH%20HUYEN`;
+            document.getElementById('qr-image').src = dynamicQr;
+            
+            qrContainer.style.display = 'block';
+        } else {
+            qrContainer.style.display = 'none';
+        }
+    }
+
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        if (selectedSeats.length === 0) {
+            e.preventDefault();
+            alert('Vui lòng chọn ghế ngồi trước khi đặt vé!');
+        }
+    });
+
+    renderBlock('left-block', layoutData.left);
+    renderBlock('right-block', layoutData.right);
+</script>
+
+</body>
+</html>
