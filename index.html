@@ -12,7 +12,8 @@
             --luuthuy-color: #2ecc71;
             --vanba-color: #9b59b6;
             --selected-color: #e74c3c;
-            --bg-color: #f4f7f6;
+            --sold-color: #7f8c8d; /* Màu xám cho ghế đã bán */
+            --bg-color: #f5eedc;
         }
 
         body {
@@ -21,79 +22,87 @@
             margin: 0;
             padding: 20px;
             color: #333;
+            background-image: 
+                radial-gradient(circle at 50% 50%, transparent 9px, rgba(197, 160, 89, 0.15) 10px, rgba(197, 160, 89, 0.15) 11px, transparent 12px),
+                radial-gradient(circle at 0 0, transparent 9px, rgba(197, 160, 89, 0.15) 10px, rgba(197, 160, 89, 0.15) 11px, transparent 12px);
+            background-size: 30px 30px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            background: #fff;
+            background: #ffffff;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 3px solid #c5a059;
+            position: relative;
         }
 
-        h1, h2, h3 {
+        .container::before {
+            content: "◆";
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid #c5a059;
+            pointer-events: none;
+            border-radius: 10px;
+            color: #c5a059;
+            font-size: 10px;
+            padding: 5px;
+        }
+
+        .header-area {
             text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px double #c5a059;
+            padding-bottom: 15px;
+        }
+
+        .main-title {
+            font-size: 42px;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            font-style: italic;
             color: #0c3c60;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .sub-title {
-            text-align: center;
-            font-style: italic;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-        }
-
-        .legend-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
+            letter-spacing: 4px;
+            color: #b38b34;
+            margin: 5px 0 0 0;
         }
 
-        .color-box {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-
-        .stage {
-            width: 60%;
-            margin: 20px auto 40px auto;
-            background: #e0e0e0;
-            text-align: center;
-            padding: 10px;
+        .stage-title {
+            width: 50%;
+            margin: 15px auto;
+            border: 2px solid #b38b34;
+            padding: 8px;
             font-weight: bold;
-            letter-spacing: 2px;
-            border-bottom: 4px solid #0c3c60;
+            color: #0c3c60;
+            background-color: #fffdf7;
             border-radius: 4px;
         }
 
         .theater-layout {
             display: flex;
             justify-content: center;
-            gap: 60px;
-            margin-bottom: 40px;
+            gap: 50px;
+            margin: 30px 0;
             overflow-x: auto;
             padding: 10px;
+            background: radial-gradient(ellipse at bottom, #f9f6f0 0%, #ffffff 70%);
+            border-radius: 8px;
         }
 
         .block {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .row {
@@ -103,15 +112,16 @@
         }
 
         .row-label {
-            width: 25px;
+            width: 30px;
             font-weight: bold;
             text-align: center;
-            color: #555;
+            color: #0c3c60;
+            font-size: 13px;
         }
 
         .seat {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             font-size: 11px;
             font-weight: bold;
             display: flex;
@@ -121,13 +131,15 @@
             cursor: pointer;
             user-select: none;
             transition: all 0.2s;
-            background: #ddd;
+            background: #e0e0e0;
             color: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
         }
 
-        .seat:hover {
-            transform: scale(1.15);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        .seat:hover:not(.sold) {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 10;
         }
 
         .seat.haitrieu { background-color: var(--vip-color); }
@@ -139,16 +151,54 @@
         .seat.selected {
             background-color: var(--selected-color) !important;
             color: white !important;
+            box-shadow: 0 0 8px var(--selected-color);
+        }
+
+        .seat.sold {
+            background-color: var(--sold-color) !important;
+            color: #d0d0d0 !important;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+            text-decoration: line-through;
+            opacity: 0.6;
         }
 
         .seat.empty { visibility: hidden; }
 
+        .legend-section {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: #fffdf7;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px dashed #c5a059;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .color-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+        }
+
         .booking-form-section {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.1fr 0.9fr;
             gap: 30px;
-            border-top: 2px dashed #ddd;
-            padding-top: 30px;
+            border-top: 2px dashed #c5a059;
+            padding-top: 25px;
+            margin-top: 20px;
         }
 
         @media (max-width: 768px) {
@@ -161,22 +211,24 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: bold;
+            color: #0c3c60;
         }
 
-        .form-group input, .form-group select {
+        .form-group input {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #c5a059;
             border-radius: 6px;
             box-sizing: border-box;
+            background-color: #fffdfb;
         }
 
         .qr-section {
             display: none;
             text-align: center;
-            background: #fff;
+            background: #ffffff;
             padding: 15px;
             border: 2px solid #2ecc71;
             border-radius: 8px;
@@ -184,42 +236,43 @@
         }
 
         .qr-section img {
-            max-width: 220px;
+            max-width: 200px;
             margin: 10px 0;
-            border: 1px solid #eee;
-            border-radius: 4px;
+            border: 1px solid #f0f0f0;
+            padding: 5px;
         }
 
         .bank-info {
-            background: #f1f2f6;
-            padding: 8px;
+            background: #f4f9f4;
+            padding: 10px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             color: #2c3e50;
             margin-bottom: 10px;
             text-align: left;
-            line-height: 1.4;
+            line-height: 1.5;
+            border-left: 4px solid #2ecc71;
         }
 
         .checkout-box {
-            background: #f9f9f9;
+            background: #fffdf9;
             padding: 20px;
             border-radius: 8px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #e2d7be;
         }
 
         .checkout-summary p {
             display: flex;
             justify-content: space-between;
             margin: 10px 0;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .checkout-summary .total {
             font-size: 20px;
             font-weight: bold;
             color: #d35400;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #e2d7be;
             padding-top: 10px;
         }
 
@@ -237,42 +290,53 @@
         }
 
         .btn-submit:hover { background-color: #219653; }
+
+        .lotus-decor-left, .lotus-decor-right {
+            position: absolute;
+            bottom: 10px;
+            font-size: 40px;
+            opacity: 0.15;
+            color: #0c3c60;
+            pointer-events: none;
+        }
+        .lotus-decor-left { left: 20px; }
+        .lotus-decor-right { right: 20px; transform: scaleX(-1); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>THE SOUL OF WATER</h1>
-    <div class="sub-title">LINH HỒN CỦA NƯỚC - SÂN KHẤU RẠP I (212 GHẾ)</div>
-
-    <div class="legend-container">
-        <div class="legend-item"><div class="color-box" style="background: var(--vip-color)"></div> HẢI TRIỀU (VIP - 500K)</div>
-        <div class="legend-item"><div class="color-box" style="background: var(--lienhoa-color)"></div> LIÊN HOA (A-B - 400K)</div>
-        <div class="legend-item"><div class="color-box" style="background: var(--thuyanh-color)"></div> THỦY ẢNH (C->F - 400K)</div>
-        <div class="legend-item"><div class="color-box" style="background: var(--luuthuy-color)"></div> LƯU THỦY (H->L - 300K)</div>
-        <div class="legend-item"><div class="color-box" style="background: var(--vanba-color)"></div> VÂN BA (M->P - 200K)</div>
-        <div class="legend-item"><div class="color-box" style="background: var(--selected-color)"></div> ĐANG CHỌN</div>
+    <div class="header-area">
+        <h1 class="main-title">The Soul of Water</h1>
+        <div class="sub-title">—— LINH HỒN CỦA NƯỚC ——</div>
+        <div class="stage-title">SÂN KHẤU RẠP I (212 GHẾ)</div>
     </div>
 
-    <div class="stage">SÂN KHẤU / STAGE</div>
+    <div class="legend-section">
+        <div class="legend-item"><div class="color-box" style="background: var(--vip-color)"></div> HẢI TRIỀU (VIP - 500K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--lienhoa-color)"></div> LIÊN HOA (A-B - 400K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--thuyanh-color)"></div> THỦY ẢNH (C-F - 400K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--luuthuy-color)"></div> LƯU THỦY (H-L - 300K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--vanba-color)"></div> VÂN BA (M-P - 200K)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--sold-color)"></div> ĐÃ BÁN / KHÓA</div>
+    </div>
 
     <div class="theater-layout">
         <div class="block" id="left-block"></div>
         <div class="block" id="right-block"></div>
     </div>
 
-    <form id="bookingForm" action="https://formspree.io/f/YOUR_FORM_ID_HERE" method="POST" enctype="multipart/form-data">
+    <form id="bookingForm" action="https://formspree.io/f/xojbdden" method="POST" enctype="multipart/form-data">
         <div class="booking-form-section">
-            
             <div>
                 <h3>THÔNG TIN KHÁCH HÀNG</h3>
                 <div class="form-group">
                     <label>Họ và Tên *</label>
-                    <input type="text" name="Họ tên" required placeholder="Nguyễn Văn A">
+                    <input type="text" name="Họ tên" required placeholder="Ví dụ: Nguyễn Văn A">
                 </div>
                 <div class="form-group">
                     <label>Số điện thoại *</label>
-                    <input type="tel" name="Số điện thoại" required placeholder="0901234567">
+                    <input type="tel" name="Số điện thoại" required placeholder="Ví dụ: 0901234567">
                 </div>
                 <div class="form-group">
                     <label>Email nhận vé *</label>
@@ -280,16 +344,16 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 20px;">
-                    <label style="color: #c0392b;">Tải ảnh chụp màn hình Chuyển Khoản *</label>
+                    <label style="color: #c0392b;">Tải ảnh xác nhận chuyển khoản *</label>
                     <input type="file" name="Ảnh xác nhận CK" accept="image/*" required>
-                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Khách hàng quét mã QR bên phải để thanh toán, sau đó chụp màn hình bill thành công và tải lên tại đây.</small>
+                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Vui lòng quét mã QR bên phải, thực hiện chuyển khoản, chụp màn hình biên lai và tải lên đây.</small>
                 </div>
             </div>
 
             <div class="checkout-box">
                 <h3>THÔNG TIN THANH TOÁN</h3>
                 <div class="checkout-summary">
-                    <p><span>Ghế đã chọn:</span> <strong id="selected-seats-text">Chưa chọn ghế nào</strong></p>
+                    <p><span>Ghế đã chọn:</span> <strong id="selected-seats-text" style="color:#0c3c60;">Chưa chọn ghế</strong></p>
                     <p><span>Số lượng vé:</span> <strong id="ticket-count">0</strong></p>
                     <p class="total"><span>Tổng tiền:</span> <span id="total-price">0 đ</span></p>
                     
@@ -298,28 +362,36 @@
 
                     <div class="qr-section" id="qr-container">
                         <h4 style="margin:0 0 10px 0; color:#27ae60;">QUÉT MÃ QR ĐỂ THANH TOÁN</h4>
-                        
                         <div class="bank-info">
                             <strong>Chủ tài khoản:</strong> LE MINH HUYEN<br>
                             <strong>Số tài khoản:</strong> 5550 8102 005<br>
-                            <strong>Ngân hàng:</strong> TPBank (Ngân hàng Tiền Phong)
+                            <strong>Ngân hàng:</strong> TPBank
                         </div>
-
-                        <img id="qr-image" src="https://img.vietqr.io/image/TPBank-55508102005-qr_only.png?accountName=LE%20MINH%20HUYEN" alt="Mã QR LE MINH HUYEN">
-                        
+                        <img id="qr-image" src="" alt="Mã QR Chuyển Khoản">
                         <p style="font-size:13px; font-weight:bold; color:#2c3e50; margin:5px 0 0 0;">
                             Nội dung CK: <span id="qr-content" style="color:#d35400;">SOULOFWATER</span>
                         </p>
                     </div>
                 </div>
-                <button type="submit" class="btn-submit">GỬI XÁC NHẬN ĐẶT VÉ</button>
+                <button type="submit" class="btn-submit" id="submitBtn">GỬI XÁC NHẬN ĐẶT VÉ</button>
             </div>
-
         </div>
     </form>
+    <div class="lotus-decor-left">❀</div>
+    <div class="lotus-decor-right">❀</div>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://thesoulofwater-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
     const rowConfig = {
         'A': { type: 'lienhoa', price: 400000 }, 'B': { type: 'lienhoa', price: 400000 },
         'C': { type: 'thuyanh', price: 400000 }, 'D': { type: 'thuyanh', price: 400000 },
@@ -351,6 +423,7 @@
     };
 
     let selectedSeats = [];
+    let soldSeatsList = {};
 
     function renderBlock(blockId, data) {
         const blockContainer = document.getElementById(blockId);
@@ -359,7 +432,7 @@
             rowDiv.className = 'row';
             const label = document.createElement('div');
             label.className = 'row-label';
-            label.innerText = rowData.isVipHeader ? '' : rowData.row;
+            label.innerText = rowData.isVipHeader ? 'VIP' : rowData.row;
             rowDiv.appendChild(label);
 
             rowData.seats.forEach(seatNum => {
@@ -376,9 +449,14 @@
                     seatDiv.className = `seat ${seatType}`;
                     seatDiv.innerText = seatNum;
                     const seatId = rowData.isVipHeader ? `VIP-${seatNum}` : `${rowData.row}-${seatNum}`;
+                    seatDiv.id = `seat-${seatId}`;
                     seatDiv.dataset.id = seatId;
                     seatDiv.dataset.price = price;
-                    seatDiv.addEventListener('click', () => toggleSeat(seatDiv, seatId, price));
+                    seatDiv.addEventListener('click', () => {
+                        if(!seatDiv.classList.contains('sold')) {
+                            toggleSeat(seatDiv, seatId, price);
+                        }
+                    });
                 }
                 rowDiv.appendChild(seatDiv);
             });
@@ -403,7 +481,7 @@
         const seatNames = selectedSeats.map(s => s.id).join(', ');
 
         document.getElementById('ticket-count').innerText = count;
-        document.getElementById('selected-seats-text').innerText = count > 0 ? seatNames : 'Chưa chọn ghế nào';
+        document.getElementById('selected-seats-text').innerText = count > 0 ? seatNames : 'Chưa chọn ghế';
         document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + ' đ';
 
         document.getElementById('hidden-seats').value = seatNames;
@@ -411,28 +489,60 @@
 
         const qrContainer = document.getElementById('qr-container');
         if (count > 0) {
-            const formatSeats = seatNames.replace(/,/g, '');
+            const formatSeats = seatNames.replace(/,/g, '').replace(/ /g, '');
             document.getElementById('qr-content').innerText = `SOULOFWATER ${formatSeats}`;
-            
             const dynamicQr = `https://img.vietqr.io/image/TPBank-55508102005-qr_only.png?amount=${total}&addInfo=SOULOFWATER%20${encodeURIComponent(formatSeats)}&accountName=LE%20MINH%20HUYEN`;
             document.getElementById('qr-image').src = dynamicQr;
-            
             qrContainer.style.display = 'block';
         } else {
             qrContainer.style.display = 'none';
         }
     }
 
+    // ĐỒNG BỘ TRẠNG THÁI GHẾ TỪ GOOGLE FIREBASE THEO THỜI GIAN THỰC
+    const seatsRef = ref(db, 'sold_seats');
+    onValue(seatsRef, (snapshot) => {
+        soldSeatsList = snapshot.val() || {};
+        document.querySelectorAll('.seat:not(.empty)').forEach(seatDiv => {
+            const seatId = seatDiv.dataset.id;
+            if (soldSeatsList[seatId]) {
+                seatDiv.classList.add('sold');
+                seatDiv.classList.remove('selected');
+                selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+            } else {
+                seatDiv.classList.remove('sold');
+            }
+        });
+        updateCheckoutSummary();
+    });
+
+    // XỬ LÝ KHÓA GHẾ KHI KHÁCH BẤM ĐẶT VÉ
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         if (selectedSeats.length === 0) {
             e.preventDefault();
-            alert('Vui lòng chọn ghế ngồi trước khi đặt vé!');
+            alert('Vui lòng chọn ít nhất một ghế ngồi trên sơ đồ trước khi gửi thanh toán!');
+            return;
         }
+
+        let hasConflict = false;
+        selectedSeats.forEach(s => {
+            if (soldSeatsList[s.id]) hasConflict = true;
+        });
+
+        if (hasConflict) {
+            e.preventDefault();
+            alert('Rất tiếc, một trong số các ghế bạn chọn vừa có người đặt trước. Vui lòng chọn ghế khác!');
+            return;
+        }
+
+        // Đẩy lệnh khóa ghế lên database ngay lập tức trước khi form load gửi đi
+        selectedSeats.forEach(s => {
+            set(ref(db, 'sold_seats/' + s.id), true);
+        });
     });
 
     renderBlock('left-block', layoutData.left);
     renderBlock('right-block', layoutData.right);
 </script>
-
 </body>
 </html>
