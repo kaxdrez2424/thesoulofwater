@@ -384,7 +384,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Đã sửa lại đường dẫn URL chính xác đến máy chủ Đông Nam Á (asia-southeast1) của bạn
     const firebaseConfig = {
         databaseURL: "https://thesoulofwater-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
@@ -485,7 +484,7 @@
         document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + ' đ';
 
         document.getElementById('hidden-seats').value = seatNames;
-        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN) + ' đ';
+        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN') + ' đ';
 
         const qrContainer = document.getElementById('qr-container');
         if (count > 0) {
