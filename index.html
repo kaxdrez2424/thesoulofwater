@@ -12,7 +12,7 @@
             --luuthuy-color: #2ecc71;
             --vanba-color: #9b59b6;
             --selected-color: #e74c3c;
-            --sold-color: #7f8c8d; /* Màu xám cho ghế đã bán */
+            --sold-color: #7f8c8d;
             --bg-color: #f5eedc;
         }
 
@@ -326,7 +326,7 @@
         <div class="block" id="right-block"></div>
     </div>
 
-    <form id="bookingForm" action="https://formspree.io/f/xojbdden" method="POST" enctype="multipart/form-data">
+    <form id="bookingForm" action="https://formspree.io/f/xojbdden" method="POST">
         <div class="booking-form-section">
             <div>
                 <h3>THÔNG TIN KHÁCH HÀNG</h3>
@@ -342,11 +342,10 @@
                     <label>Email nhận vé *</label>
                     <input type="email" name="Email" required placeholder="username@gmail.com">
                 </div>
-
-                <div class="form-group" style="margin-top: 20px;">
-                    <label style="color: #c0392b;">Tải ảnh xác nhận chuyển khoản *</label>
-                    <input type="file" name="Ảnh xác nhận CK" accept="image/*" required>
-                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Vui lòng quét mã QR bên phải, thực hiện chuyển khoản, chụp màn hình biên lai và tải lên đây.</small>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="color: #c0392b;">4 số cuối Số tài khoản chuyển khoản *</label>
+                    <input type="text" name="4 số cuối STK" maxlength="4" required placeholder="Ví dụ: 6789">
+                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Vui lòng quét mã QR bên phải để chuyển khoản, sau đó điền 4 số cuối tài khoản ngân hàng của bạn để đối soát tiền về.</small>
                 </div>
             </div>
 
@@ -475,6 +474,7 @@
         updateCheckoutSummary();
     }
 
+    // Hàm tính toán tiền tệ và cập nhật mã QR động
     function updateCheckoutSummary() {
         const count = selectedSeats.length;
         const total = selectedSeats.reduce((sum, s) => sum + s.price, 0);
@@ -485,7 +485,7 @@
         document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + ' đ';
 
         document.getElementById('hidden-seats').value = seatNames;
-        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN') + ' đ';
+        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN) + ' đ';
 
         const qrContainer = document.getElementById('qr-container');
         if (count > 0) {
@@ -499,7 +499,7 @@
         }
     }
 
-    // ĐỒNG BỘ TRẠNG THÁI GHẾ TỪ GOOGLE FIREBASE THEO THỜI GIAN THỰC
+    // Đồng bộ trạng thái ghế
     const seatsRef = ref(db, 'sold_seats');
     onValue(seatsRef, (snapshot) => {
         soldSeatsList = snapshot.val() || {};
@@ -516,7 +516,7 @@
         updateCheckoutSummary();
     });
 
-    // XỬ LÝ KHÓA GHẾ KHI KHÁCH BẤM ĐẶT VÉ
+    // Khóa ghế khi click gửi form
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         if (selectedSeats.length === 0) {
             e.preventDefault();
@@ -535,7 +535,6 @@
             return;
         }
 
-        // Đẩy lệnh khóa ghế lên database ngay lập tức trước khi form load gửi đi
         selectedSeats.forEach(s => {
             set(ref(db, 'sold_seats/' + s.id), true);
         });
