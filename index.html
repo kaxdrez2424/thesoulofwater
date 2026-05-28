@@ -12,7 +12,8 @@
             --luuthuy-color: #2ecc71;
             --vanba-color: #9b59b6;
             --selected-color: #e74c3c;
-            --sold-color: #7f8c8d;
+            --pending-color: #f1c40f; /* Màu vàng chờ thanh toán */
+            --sold-color: #7f8c8d;     /* Màu xám đã bán vĩnh viễn */
             --bg-color: #f5eedc;
         }
 
@@ -136,7 +137,7 @@
             border: 1px solid rgba(0,0,0,0.1);
         }
 
-        .seat:hover:not(.sold) {
+        .seat:hover:not(.sold):not(.pending) {
             transform: scale(1.2);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             z-index: 10;
@@ -152,6 +153,14 @@
             background-color: var(--selected-color) !important;
             color: white !important;
             box-shadow: 0 0 8px var(--selected-color);
+        }
+
+        .seat.pending {
+            background-color: #f5b041 !important; /* Màu vàng cam giữ chỗ tạm thời */
+            color: white !important;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .seat.sold {
@@ -318,7 +327,8 @@
         <div class="legend-item"><div class="color-box" style="background: var(--thuyanh-color)"></div> THỦY ẢNH (C-F - 400K)</div>
         <div class="legend-item"><div class="color-box" style="background: var(--luuthuy-color)"></div> LƯU THỦY (H-L - 300K)</div>
         <div class="legend-item"><div class="color-box" style="background: var(--vanba-color)"></div> VÂN BA (M-P - 200K)</div>
-        <div class="legend-item"><div class="color-box" style="background: var(--sold-color)"></div> ĐÃ BÁN / KHÓA</div>
+        <div class="legend-item"><div class="color-box" style="#f5b041"></div> GIỮ CHỖ TẠM THỜI (10 PHÚT)</div>
+        <div class="legend-item"><div class="color-box" style="background: var(--sold-color)"></div> ĐÃ BÁN VĨNH VIỄN</div>
     </div>
 
     <div class="theater-layout">
@@ -332,7 +342,7 @@
                 <h3>THÔNG TIN KHÁCH HÀNG</h3>
                 <div class="form-group">
                     <label>Họ và Tên *</label>
-                    <input type="text" name="Họ tên" required placeholder="Ví dụ: Nguyễn Văn A">
+                    <input type="text" id="cus_name" name="Họ tên" required placeholder="Ví dụ: Nguyễn Văn A">
                 </div>
                 <div class="form-group">
                     <label>Số điện thoại *</label>
@@ -345,7 +355,7 @@
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="color: #c0392b;">4 số cuối Số tài khoản chuyển khoản *</label>
                     <input type="text" name="4 số cuối STK" maxlength="4" required placeholder="Ví dụ: 6789">
-                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Vui lòng quét mã QR bên phải để chuyển khoản, sau đó điền 4 số cuối tài khoản ngân hàng của bạn để đối soát tiền về.</small>
+                    <small style="color:#7f8c8d; display:block; margin-top:5px;">Vui lòng quét mã QR bên phải thanh toán trong vòng 10 phút, quá thời gian ghế sẽ tự động hủy nhả cho người khác đặt.</small>
                 </div>
             </div>
 
@@ -368,7 +378,7 @@
                         </div>
                         <img id="qr-image" src="" alt="Mã QR Chuyển Khoản">
                         <p style="font-size:13px; font-weight:bold; color:#2c3e50; margin:5px 0 0 0;">
-                            Nội dung CK: <span id="qr-content" style="color:#d35400;">SOULOFWATER</span>
+                            Nội dung CK: <span id="qr-content" style="color:#d35400; font-size:14px;">SOULOFWATER</span>
                         </p>
                     </div>
                 </div>
@@ -424,6 +434,25 @@
     let selectedSeats = [];
     let soldSeatsList = {};
 
+    function removeVietnameseTones(str) {
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i");
+        str = str.replace(/ò|á|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y");
+        str = str.replace(/đ/g,"d");
+        str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+        str = str.replace(/È|É|Ạ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+        str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+        str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+        str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+        str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+        str = str.replace(/Đ/g, "D");
+        str = str.replace(/[^a-zA-Z0-9 ]/g, "");
+        return str.trim().toUpperCase();
+    }
+
     function renderBlock(blockId, data) {
         const blockContainer = document.getElementById(blockId);
         data.forEach(rowData => {
@@ -452,7 +481,7 @@
                     seatDiv.dataset.id = seatId;
                     seatDiv.dataset.price = price;
                     seatDiv.addEventListener('click', () => {
-                        if(!seatDiv.classList.contains('sold')) {
+                        if(!seatDiv.classList.contains('sold') && !seatDiv.classList.contains('pending')) {
                             toggleSeat(seatDiv, seatId, price);
                         }
                     });
@@ -488,9 +517,14 @@
 
         const qrContainer = document.getElementById('qr-container');
         if (count > 0) {
-            const formatSeats = seatNames.replace(/,/g, '').replace(/ /g, '');
-            document.getElementById('qr-content').innerText = `SOULOFWATER ${formatSeats}`;
-            const dynamicQr = `https://img.vietqr.io/image/TPBank-55508102005-qr_only.png?amount=${total}&addInfo=SOULOFWATER%20${encodeURIComponent(formatSeats)}&accountName=LE%20MINH%20HUYEN`;
+            const rawName = document.getElementById('cus_name').value || '';
+            const cleanName = removeVietnameseTones(rawName).replace(/ /g, '');
+            const formatSeats = seatNames.replace(/,/g, '').replace(/ /g, '').replace(/-/g, '');
+            
+            const fullContent = `SOULOFWATER ${cleanName} ${formatSeats}`.substring(0, 50).toUpperCase();
+            document.getElementById('qr-content').innerText = fullContent;
+            
+            const dynamicQr = `https://img.vietqr.io/image/TPBank-55508102005-qr_only.png?amount=${total}&addInfo=${encodeURIComponent(fullContent)}&accountName=LE%20MINH%20HUYEN`;
             document.getElementById('qr-image').src = dynamicQr;
             qrContainer.style.display = 'block';
         } else {
@@ -498,17 +532,34 @@
         }
     }
 
+    document.getElementById('cus_name').addEventListener('input', updateCheckoutSummary);
+
     const seatsRef = ref(db, 'sold_seats');
     onValue(seatsRef, (snapshot) => {
         soldSeatsList = snapshot.val() || {};
+        const currentTime = Date.now();
+
         document.querySelectorAll('.seat:not(.empty)').forEach(seatDiv => {
             const seatId = seatDiv.dataset.id;
-            if (soldSeatsList[seatId]) {
-                seatDiv.classList.add('sold');
-                seatDiv.classList.remove('selected');
-                selectedSeats = selectedSeats.filter(s => s.id !== seatId);
-            } else {
-                seatDiv.classList.remove('sold');
+            const seatData = soldSeatsList[seatId];
+
+            seatDiv.classList.remove('sold', 'pending');
+
+            if (seatData) {
+                if (seatData === true) {
+                    // Trạng thái đã bán vĩnh viễn (Màu xám)
+                    seatDiv.classList.add('sold');
+                    selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+                } else if (typeof seatData === 'number') {
+                    // Trạng thái đang giữ chỗ tạm thời (Màu vàng)
+                    if (currentTime > seatData) {
+                        // Quá 10 phút, tự động xóa bỏ trạng thái giữ chỗ trên Firebase
+                        set(ref(db, 'sold_seats/' + seatId), null);
+                    } else {
+                        seatDiv.classList.add('pending');
+                        selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+                    }
+                }
             }
         });
         updateCheckoutSummary();
@@ -528,12 +579,14 @@
 
         if (hasConflict) {
             e.preventDefault();
-            alert('Rất tiếc, một trong số các ghế bạn chọn vừa có người đặt trước. Vui lòng chọn ghế khác!');
+            alert('Rất tiếc, một trong số các ghế bạn chọn vừa được giữ chỗ. Vui lòng tải lại trang và chọn ghế khác!');
             return;
         }
 
+        // Tính thời gian hết hạn là thời gian hiện tại cộng thêm 10 phút (10 * 60 * 1000 mili-giây)
+        const expireTime = Date.now() + (10 * 60 * 1000);
         selectedSeats.forEach(s => {
-            set(ref(db, 'sold_seats/' + s.id), true);
+            set(ref(db, 'sold_seats/' + s.id), expireTime);
         });
     });
 
