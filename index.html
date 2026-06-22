@@ -402,19 +402,18 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // BẢNG GIÁ VÀ PHÂN KHU ĐÃ GIỮ NGUYÊN BẢN BAN ĐẦU CỦA BẠN
+    // GIỮ NGUYÊN GIÁ GỐC - ĐÃ BỎ HÀNG G VÀ HÀNG J KHỎI ĐỊNH CẤU HÌNH
     const rowConfig = {
         'VIP': { type: 'haitrieu', price: 500000 },
         'A': { type: 'lienhoa', price: 400000 }, 'B': { type: 'lienhoa', price: 400000 },
         'C': { type: 'thuyanh', price: 400000 }, 'D': { type: 'thuyanh', price: 400000 },
         'E': { type: 'thuyanh', price: 400000 }, 'F': { type: 'thuyanh', price: 400000 },
-        'H': { type: 'luuthuy', price: 300000 }, 'I': { type: 'luuthuy', price: 300000 }, 
-        'J': { type: 'luuthuy', price: 300000 }, 'K': { type: 'luuthuy', price: 300000 }, 
+        'H': { type: 'luuthuy', price: 300000 }, 'K': { type: 'luuthuy', price: 300000 }, 
         'L': { type: 'luuthuy', price: 300000 },
         'M': { type: 'vanba', price: 200000 },  'N': { type: 'vanba', price: 200000 },  'P': { type: 'vanba', price: 200000 }
     };
 
-    // Bố cục ghế chuẩn số lượng theo sơ đồ (Đã loại bỏ hàng G)
+    // BỐ CỤC GHẾ ĐÃ LOẠI BỎ HOÀN TOÀN CẢ HÀNG G VÀ HÀNG J
     const layoutData = {
         left: [
             { row: 'VIP', seats: [13, 12, 11, 10, 9, 8] },
@@ -425,9 +424,7 @@
             { row: 'E', seats: [15, 14, 13, 12, 11, 10, 9] }, 
             { row: 'F', seats: [15, 14, 13, 12, 11, 10, 9] },
             { row: 'H', seats: [15, 14, 13, 12, 11, 10, 9] }, 
-            { row: 'I', seats: [null, 13, 12, 11, 10, 9, 8] }, 
-            { row: 'J', seats: [null, 13, 12, 11, 10, 9, 8] }, 
-            { row: 'K', seats: [null, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'K', seats: [null, 13, 12, 11, 10, 9, 8] }, // Bỏ J, đi trực tiếp từ H xuống K
             { row: 'L', seats: [14, 13, 12, 11, 10, 9, 8] },
             { row: 'M', seats: [15, 14, 13, 12, 11, 10, 9] }, 
             { row: 'N', seats: [15, 14, 13, 12, 11, 10, 9] }, 
@@ -442,9 +439,7 @@
             { row: 'E', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
             { row: 'F', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
             { row: 'H', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
-            { row: 'I', seats: [7, 6, 5, 4, 3, 2, 1] }, 
-            { row: 'J', seats: [7, 6, 5, 4, 3, 2, 1] }, 
-            { row: 'K', seats: [7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'K', seats: [7, 6, 5, 4, 3, 2, 1] }, // Bỏ J, đi trực tiếp từ H xuống K
             { row: 'L', seats: [7, 6, 5, 4, 3, 2, 1] },
             { row: 'M', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
             { row: 'N', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
