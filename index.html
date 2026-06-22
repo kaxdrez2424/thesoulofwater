@@ -412,7 +412,6 @@
         'M': { type: 'vanba', price: 200000 },  'N': { type: 'vanba', price: 200000 },  'P': { type: 'vanba', price: 200000 }
     };
 
-    // BỐ CỤC GHẾ ĐÃ ĐƯỢC ĐIỀN ĐỦ HÀNG I THEO ĐÚNG YÊU CẦU (ĐÃ BỎ G VÀ J)
     const layoutData = {
         left: [
             { row: 'VIP', seats: [13, 12, 11, 10, 9, 8] },
@@ -423,7 +422,7 @@
             { row: 'E', seats: [15, 14, 13, 12, 11, 10, 9] }, 
             { row: 'F', seats: [15, 14, 13, 12, 11, 10, 9] },
             { row: 'H', seats: [15, 14, 13, 12, 11, 10, 9] }, 
-            { row: 'I', seats: [13, 12, 11, 10, 9, 8] },        // Đã sửa lại đủ ghế 13-8 bên trái
+            { row: 'I', seats: [13, 12, 11, 10, 9, 8] },        
             { row: 'K', seats: [null, 13, 12, 11, 10, 9, 8] }, 
             { row: 'L', seats: [14, 13, 12, 11, 10, 9, 8] },
             { row: 'M', seats: [15, 14, 13, 12, 11, 10, 9] }, 
@@ -439,7 +438,7 @@
             { row: 'E', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
             { row: 'F', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
             { row: 'H', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
-            { row: 'I', seats: [7, 6, 5, 4, 3, 2, 1] },        // Ghế 7-1 bên phải
+            { row: 'I', seats: [7, 6, 5, 4, 3, 2, 1] },        
             { row: 'K', seats: [7, 6, 5, 4, 3, 2, 1] }, 
             { row: 'L', seats: [7, 6, 5, 4, 3, 2, 1] },
             { row: 'M', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
@@ -529,7 +528,7 @@
         document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + ' đ';
 
         document.getElementById('hidden-seats').value = seatNames;
-        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN) + ' đ';
+        document.getElementById('hidden-total').value = total.toLocaleString('vi-VN') + ' đ';
 
         const qrContainer = document.getElementById('qr-container');
         if (count > 0) {
