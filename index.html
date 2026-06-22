@@ -12,8 +12,8 @@
             --luuthuy-color: #2ecc71;
             --vanba-color: #9b59b6;
             --selected-color: #e74c3c;
-            --pending-color: #f1c40f; /* Màu vàng chờ thanh toán */
-            --sold-color: #7f8c8d;     /* Màu xám đã bán vĩnh viễn */
+            --pending-color: #f1c40f; 
+            --sold-color: #7f8c8d;     
             --bg-color: #f5eedc;
         }
 
@@ -87,6 +87,7 @@
             color: #0c3c60;
             background-color: #fffdf7;
             border-radius: 4px;
+            text-align: center;
         }
 
         .theater-layout {
@@ -113,7 +114,7 @@
         }
 
         .row-label {
-            width: 30px;
+            width: 40px;
             font-weight: bold;
             text-align: center;
             color: #0c3c60;
@@ -156,7 +157,7 @@
         }
 
         .seat.pending {
-            background-color: #f5b041 !important; /* Màu vàng cam giữ chỗ tạm thời */
+            background-color: #f5b041 !important; 
             color: white !important;
             cursor: not-allowed;
             transform: none !important;
@@ -318,7 +319,7 @@
     <div class="header-area">
         <h1 class="main-title">The Soul of Water</h1>
         <div class="sub-title">—— LINH HỒN CỦA NƯỚC ——</div>
-        <div class="stage-title">SÂN KHẤU RẠP I (212 GHẾ)</div>
+        <div class="stage-title">SÂN KHẤU RẠP I</div>
     </div>
 
     <div class="legend-section">
@@ -327,7 +328,7 @@
         <div class="legend-item"><div class="color-box" style="background: var(--thuyanh-color)"></div> THỦY ẢNH (C-F - 400K)</div>
         <div class="legend-item"><div class="color-box" style="background: var(--luuthuy-color)"></div> LƯU THỦY (H-L - 300K)</div>
         <div class="legend-item"><div class="color-box" style="background: var(--vanba-color)"></div> VÂN BA (M-P - 200K)</div>
-        <div class="legend-item"><div class="color-box" style="#f5b041"></div> GIỮ CHỖ TẠM THỜI (10 PHÚT)</div>
+        <div class="legend-item"><div class="color-box" style="background: #f5b041"></div> GIỮ CHỖ TẠM THỜI (10 PHÚT)</div>
         <div class="legend-item"><div class="color-box" style="background: var(--sold-color)"></div> ĐÃ BÁN VĨNH VIỄN</div>
     </div>
 
@@ -401,33 +402,53 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // BẢNG GIÁ VÀ PHÂN KHU ĐÃ GIỮ NGUYÊN BẢN BAN ĐẦU CỦA BẠN
     const rowConfig = {
+        'VIP': { type: 'haitrieu', price: 500000 },
         'A': { type: 'lienhoa', price: 400000 }, 'B': { type: 'lienhoa', price: 400000 },
         'C': { type: 'thuyanh', price: 400000 }, 'D': { type: 'thuyanh', price: 400000 },
         'E': { type: 'thuyanh', price: 400000 }, 'F': { type: 'thuyanh', price: 400000 },
-        'H': { type: 'luuthuy', price: 300000 }, 'I': { type: 'luuthuy', price: 300000 },
-        'K': { type: 'luuthuy', price: 300000 }, 'L': { type: 'luuthuy', price: 300000 },
+        'H': { type: 'luuthuy', price: 300000 }, 'I': { type: 'luuthuy', price: 300000 }, 
+        'J': { type: 'luuthuy', price: 300000 }, 'K': { type: 'luuthuy', price: 300000 }, 
+        'L': { type: 'luuthuy', price: 300000 },
         'M': { type: 'vanba', price: 200000 },  'N': { type: 'vanba', price: 200000 },  'P': { type: 'vanba', price: 200000 }
     };
 
+    // Bố cục ghế chuẩn số lượng theo sơ đồ (Đã loại bỏ hàng G)
     const layoutData = {
         left: [
-            { row: 'Hải Triều', seats: [13, 12, 11, 10, 9, 8], isVipHeader: true },
-            { row: 'A', seats: [14, 13, 12, 11, 10, 9, 8] }, { row: 'B', seats: [null, 13, 12, 11, 10, 9, 8] },
-            { row: 'C', seats: [14, 13, 12, 11, 10, 9, 8] }, { row: 'D', seats: [null, 13, 12, 11, 10, 9, 8] },
-            { row: 'E', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'F', seats: [15, 14, 13, 12, 11, 10, 9] },
-            { row: 'H', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'I', seats: [null, 13, 12, 11, 10, 9, 8] },
-            { row: 'K', seats: [null, 13, 12, 11, 10, 9, 8] }, { row: 'L', seats: [14, 13, 12, 11, 10, 9, 8] },
-            { row: 'M', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'N', seats: [15, 14, 13, 12, 11, 10, 9] }, { row: 'P', seats: [15, 14, 13, 12, 11, 10, 9] }
+            { row: 'VIP', seats: [13, 12, 11, 10, 9, 8] },
+            { row: 'A', seats: [14, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'B', seats: [null, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'C', seats: [14, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'D', seats: [null, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'E', seats: [15, 14, 13, 12, 11, 10, 9] }, 
+            { row: 'F', seats: [15, 14, 13, 12, 11, 10, 9] },
+            { row: 'H', seats: [15, 14, 13, 12, 11, 10, 9] }, 
+            { row: 'I', seats: [null, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'J', seats: [null, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'K', seats: [null, 13, 12, 11, 10, 9, 8] }, 
+            { row: 'L', seats: [14, 13, 12, 11, 10, 9, 8] },
+            { row: 'M', seats: [15, 14, 13, 12, 11, 10, 9] }, 
+            { row: 'N', seats: [15, 14, 13, 12, 11, 10, 9] }, 
+            { row: 'P', seats: [15, 14, 13, 12, 11, 10, 9] }
         ],
         right: [
-            { row: 'Hải Triều', seats: [7, 6, 5, 4, 3, 2], isVipHeader: true },
-            { row: 'A', seats: [7, 6, 5, 4, 3, 2, 1] }, { row: 'B', seats: [7, 6, 5, 4, 3, 2, 1] },
-            { row: 'C', seats: [7, 6, 5, 4, 3, 2, 1] }, { row: 'D', seats: [7, 6, 5, 4, 3, 2, 1] },
-            { row: 'E', seats: [8, 7, 6, 5, 4, 3, 2] }, { row: 'F', seats: [8, 7, 6, 5, 4, 2, 1] },
-            { row: 'H', seats: [8, 7, 6, 5, 4, 2, 1] }, { row: 'I', seats: [8, 7, 6, 5, 4, 3, 1] },
-            { row: 'K', seats: [8, 7, 6, 5, 4, 3, 1] }, { row: 'L', seats: [8, 7, 6, 5, 4, 3, 1] },
-            { row: 'M', seats: [8, 7, 6, 5, 4, 3, 1] }, { row: 'N', seats: [8, 7, 6, 5, 4, 3, 1] }, { row: 'P', seats: [8, 7, 6, 5, 4, 3, 1] }
+            { row: 'VIP', seats: [7, 6, 5, 4, 3, 2, 1] },
+            { row: 'A', seats: [7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'B', seats: [7, 6, 5, 4, 3, 2, 1] },
+            { row: 'C', seats: [7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'D', seats: [7, 6, 5, 4, 3, 2, 1] },
+            { row: 'E', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'F', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'H', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'I', seats: [7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'J', seats: [7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'K', seats: [7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'L', seats: [7, 6, 5, 4, 3, 2, 1] },
+            { row: 'M', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'N', seats: [8, 7, 6, 5, 4, 3, 2, 1] }, 
+            { row: 'P', seats: [8, 7, 6, 5, 4, 3, 2, 1] }
         ]
     };
 
@@ -460,7 +481,7 @@
             rowDiv.className = 'row';
             const label = document.createElement('div');
             label.className = 'row-label';
-            label.innerText = rowData.isVipHeader ? 'VIP' : rowData.row;
+            label.innerText = rowData.row;
             rowDiv.appendChild(label);
 
             rowData.seats.forEach(seatNum => {
@@ -468,18 +489,17 @@
                 if (seatNum === null) {
                     seatDiv.className = 'seat empty';
                 } else {
-                    let seatType = 'haitrieu';
-                    let price = 500000;
-                    if (!rowData.isVipHeader) {
-                        seatType = rowConfig[rowData.row].type;
-                        price = rowConfig[rowData.row].price;
-                    }
+                    const seatType = rowConfig[rowData.row].type;
+                    const price = rowConfig[rowData.row].price;
+                    
                     seatDiv.className = `seat ${seatType}`;
                     seatDiv.innerText = seatNum;
-                    const seatId = rowData.isVipHeader ? `VIP-${seatNum}` : `${rowData.row}-${seatNum}`;
+                    
+                    const seatId = `${rowData.row}-${seatNum}`;
                     seatDiv.id = `seat-${seatId}`;
                     seatDiv.dataset.id = seatId;
                     seatDiv.dataset.price = price;
+                    
                     seatDiv.addEventListener('click', () => {
                         if(!seatDiv.classList.contains('sold') && !seatDiv.classList.contains('pending')) {
                             toggleSeat(seatDiv, seatId, price);
@@ -547,13 +567,10 @@
 
             if (seatData) {
                 if (seatData === true) {
-                    // Trạng thái đã bán vĩnh viễn (Màu xám)
                     seatDiv.classList.add('sold');
                     selectedSeats = selectedSeats.filter(s => s.id !== seatId);
                 } else if (typeof seatData === 'number') {
-                    // Trạng thái đang giữ chỗ tạm thời (Màu vàng)
                     if (currentTime > seatData) {
-                        // Quá 10 phút, tự động xóa bỏ trạng thái giữ chỗ trên Firebase
                         set(ref(db, 'sold_seats/' + seatId), null);
                     } else {
                         seatDiv.classList.add('pending');
@@ -583,7 +600,6 @@
             return;
         }
 
-        // Tính thời gian hết hạn là thời gian hiện tại cộng thêm 10 phút (10 * 60 * 1000 mili-giây)
         const expireTime = Date.now() + (10 * 60 * 1000);
         selectedSeats.forEach(s => {
             set(ref(db, 'sold_seats/' + s.id), expireTime);
